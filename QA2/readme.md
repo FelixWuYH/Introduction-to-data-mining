@@ -11,7 +11,8 @@
 
 # Requirements #
 - For your chosen item, write the codes *by yourself* together with your explanation as the comments.
-- In addition to the sample data used in the problems, prepare *another set of data* to verify your program.
+- In addition to the sample data used in the problems, prepare *another set of data* to verify your program
+- The package or utility you use to solve the problem cannot be a duplicate of the others (according to the timestamp of first commit).
 
 # Steps #
 1. With your GitHub account and the *forked* repository, i.e., /yourAccount/Introduction-to-data-mining/.
