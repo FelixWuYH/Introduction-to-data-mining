@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[81]:
+# In[1]:
 
 
 import numpy as np
@@ -51,6 +51,20 @@ if __name__=='__main__':
     [{Similarity.cosine(q,x3)},{Similarity.ejaccard(q,x3)},{Similarity.correlation_2(q,x3)}]''')
     print(f'''q和x4的Cosine,Extended Jaccard以及Correlation相似度分别为:
     [{Similarity.cosine(q,x4)},{Similarity.ejaccard(q,x4)},{Similarity.correlation_2(q,x4)}]''')
+
+
+# In[3]:
+
+
+#另一組數據用老師簡報上的數據
+if __name__=='__main__':
+    x = [-3,-2,-1,0,1,2,3]
+    y = [0,2,4,6,8,10,12]
+    z = [9,4,1,0,1,4,9,]
+    print(f'''x和y的Cosine,Extended Jaccard以及Correlation相似度分别为:
+    [{Similarity.cosine(x,y)},{Similarity.ejaccard(x,y)},{Similarity.correlation_1(x,y)}]''')
+    print(f'''x和z的Cosine,Extended Jaccard以及Correlation相似度分别为:
+    [{Similarity.cosine(x,z)},{Similarity.ejaccard(x,z)},{Similarity.correlation_2(x,z)}]''')
 
 
 # In[ ]:
