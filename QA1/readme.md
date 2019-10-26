@@ -11,8 +11,12 @@
 - *The skill or utility you introduce cannot be a duplicate of the others.*
 
 # Steps #
-1. Create .ipynb and its HTML file by Jupyter Notebook, e.g., 10812345tutorial.ipynb and index.html.
-2. Save both files (and the derived data folder) in a folder named by yourID, e.g., /10812345/.
-3. Upload the folder named by yourID to this repository under this folder /introduction-to-data-mining/QA1/.
-*Remember to notify me by "Pull Request" for merge*
-4. Verify the success of publishing on the Web via the URL: https://felixwuyh.github.io/Introduction-to-data-mining/QA1/yourID/, e.g., <a href="https://felixwuyh.github.io/Introduction-to-data-mining/QA1/10812345/" target="_blank"> MyURL </a>
+1. With your GitHub account, *fork* this repository as /yourAccount/Introduction-to-data-mining/, which is a new copy of this repository.
+2. By GitHub Desktop tool, *clone* the above copy on your own computer and then click "Show in Explorer" to its folder.
+3. In the folder /Introduction-to-data-mining/QA1/, create a folder named by *studentID*, e.g., /10812345/.
+4. In the folder /Introduction-to-data-mining/QA1/*studentID*/, create *studentID*tutorial1.ipynb and *index.html* by Jupyter Notebook. 
+5. By GitHub Desktop tool, *commit* and then *push* the new version to your GitHub account.
+6. With your GitHub account, create a *Pull Request* to ask me whether your folder can be merged into my repository.
+7. After I merge it, check out the URL with the prefix "felixwuyh.github.io/Introduction-to-data-mining/QA1/*studentID*/, e.g., <a href="https://felixwuyh.github.io/Introduction-to-data-mining/QA1/10812345/" target="_blank"> MyURL </a>
+
+> *Feel free to contact me via e-mail immediately when you encounter any difficulty.*
