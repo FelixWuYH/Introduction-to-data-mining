@@ -20,6 +20,6 @@
 2. In the folder /Introduction-to-data-mining/QA2/, create a folder named by *studentID*, e.g., /10812345/.
 3. In the folder /Introduction-to-data-mining/QA2/*studentID*/, create *a single file* to keep your codes and then commit. 
 4. With your GitHub account, create a *Pull Request* to ask me whether your folder can be merged into my repository.
-5. After I merge it, check the existence of your folder: "felixwuyh.github.io/Introduction-to-data-mining/QA1/*studentID*/.
+5. After I merge it, check the existence of your folder: "felixwuyh.github.io/Introduction-to-data-mining/QA2/*studentID*/*fileName*".
 
 > *Feel free to contact me via e-mail immediately when you encounter any difficulty.*
