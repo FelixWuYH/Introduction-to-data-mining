@@ -15,7 +15,7 @@
 - The package or utility you use to solve the problem cannot be a duplicate of the others (according to the timestamp of first commit).
 
 # Steps #
-0. If you have ever forked this repository before, you MUST delete the entire forked repositoty and then fork the current version.
+0. If you have ever forked this repository before, you MUST delete the entire forked one and then fork again the current version.
 1. With your GitHub account and the *forked* repository, i.e., /yourAccount/Introduction-to-data-mining/.
 2. In the folder /Introduction-to-data-mining/QA2/, create a folder named by *studentID*, e.g., /10812345/.
 3. In the folder /Introduction-to-data-mining/QA2/*studentID*/, create *a single file* to keep your codes and then commit. 
