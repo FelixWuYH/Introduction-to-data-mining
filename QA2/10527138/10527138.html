@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>QA2_10527138</title>
+<title>10527138</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13116,41 +13116,107 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Discretization</p>
+<p>Discretization
+( Based on entropy )</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">random</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="k">import</span> <span class="n">stats</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
-<span class="n">dat_1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span><span class="o">/</span><span class="mf">2.0</span>
-<span class="n">dat_2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">30</span><span class="p">)</span><span class="o">/</span><span class="mf">4.0</span>
 
-<span class="k">def</span> <span class="nf">discretize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="p">):</span>
-    <span class="n">split</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array_split</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="n">bins</span><span class="p">)</span>
-    <span class="n">cutoffs</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">split</span><span class="p">]</span>                    <span class="c1"># 取每段array的最後一個當作cutoffs</span>
-    <span class="n">cutoffs</span> <span class="o">=</span> <span class="n">cutoffs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">discrete</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">digitize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">(</span> <span class="n">discrete</span><span class="p">,</span> <span class="n">cutoffs</span> <span class="p">)</span> 
+<span class="k">def</span> <span class="nf">Entropy</span><span class="p">(</span> <span class="n">labels</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="mi">2</span> <span class="p">):</span>
+    <span class="n">probs</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="c1"># probs 機率</span>
+    <span class="n">en</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">entropy</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="n">base</span><span class="p">)</span>                   <span class="c1"># 計算Pij</span>
+    
+    <span class="k">return</span> <span class="n">en</span>              
 
+<span class="k">def</span> <span class="nf">Calculate</span><span class="p">(</span> <span class="n">X1</span><span class="p">,</span> <span class="n">Y1</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">Y2</span><span class="p">,</span> <span class="n">X3</span><span class="p">,</span> <span class="n">Y3</span> <span class="p">):</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#-------------------------------------------------------------------#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">Y1</span> <span class="p">)</span> <span class="p">)</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">Y1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">Y1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y1</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y1</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">answer_1</span> <span class="o">=</span> <span class="n">total</span>
+    
+    <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#-------------------------------------------------------------------#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">Y2</span> <span class="p">)</span> <span class="p">)</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">Y2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">Y2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y2</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y2</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">answer_2</span> <span class="o">=</span> <span class="n">total</span>
+    
+    <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c1">#-------------------------------------------------------------------#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span> <span class="n">Y3</span> <span class="p">)</span> <span class="p">)</span> <span class="p">:</span>
+        <span class="k">if</span> <span class="n">Y3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]:</span>
+            <span class="k">if</span> <span class="n">Y3</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="c1">#print( Y3[:pos] )</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y3</span><span class="p">[:</span><span class="n">pos</span><span class="p">]</span> <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1">#print( Y3[pos+1:i] )</span>
+                <span class="n">total</span> <span class="o">=</span> <span class="n">total</span> <span class="o">+</span> <span class="n">Entropy</span><span class="p">(</span> <span class="n">Y3</span><span class="p">[</span><span class="n">pos</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">i</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">i</span>
+    <span class="n">answer_3</span> <span class="o">=</span> <span class="n">total</span>
+    
+    <span class="c1">#-------------------------------------------------------------------#</span>
+    
+    <span class="k">if</span> <span class="p">(</span> <span class="n">answer_1</span> <span class="o">&gt;</span> <span class="n">answer_2</span> <span class="ow">and</span> <span class="n">answer_1</span> <span class="o">&gt;</span> <span class="n">answer_3</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;The first data is better. Entropy is </span><span class="si">{}</span><span class="s1"> :&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">answer_1</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="p">(</span> <span class="n">answer_2</span> <span class="o">&gt;</span> <span class="n">answer_1</span> <span class="ow">and</span> <span class="n">answer_2</span> <span class="o">&gt;</span> <span class="n">answer_3</span> <span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;The second data is better. Entropy is </span><span class="si">{}</span><span class="s1"> :&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">answer_2</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;The third dada is better. Entropy is </span><span class="si">{}</span><span class="s1"> :&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">answer_3</span><span class="p">)</span>
+    
+  
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-    <span class="n">discrete_dat_1</span><span class="p">,</span> <span class="n">cutoff</span> <span class="o">=</span> <span class="n">discretize</span><span class="p">(</span><span class="n">dat_1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>       <span class="c1"># dat 為測試資料 分成4組</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dat_1:           </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dat_1</span><span class="p">))</span>          <span class="c1"># 測試資料</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;discrete_dat:    </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">discrete_dat_1</span><span class="p">))</span> <span class="c1"># 降維後的資料</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cutoff:          </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cutoff</span><span class="p">))</span>         <span class="c1"># 分段點</span>
-	
-    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-	
-    <span class="n">discrete_dat_2</span><span class="p">,</span> <span class="n">cutoff</span> <span class="o">=</span> <span class="n">discretize</span><span class="p">(</span><span class="n">dat_2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;dat_2:           </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dat_2</span><span class="p">))</span>          
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;discrete_dat:    </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">discrete_dat_2</span><span class="p">))</span> 
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;cutoff:          </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">cutoff</span><span class="p">))</span>   
+    <span class="n">test1_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">4.9</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">test1_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    <span class="n">test2_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">4.9</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">test2_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    <span class="n">test3_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.5</span><span class="p">,</span> <span class="mf">4.6</span><span class="p">,</span> <span class="mf">4.9</span><span class="p">,</span> <span class="mf">5.2</span><span class="p">,</span> <span class="mf">5.3</span><span class="p">,</span> <span class="mf">5.5</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mf">7.0</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mf">9.5</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">test3_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    
+    
+    <span class="n">mine1_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span>  <span class="mi">12</span><span class="p">,</span>  <span class="mi">13</span><span class="p">,</span>  <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span>  <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span>  <span class="mi">18</span><span class="p">,</span>  <span class="mi">19</span><span class="p">,</span>  <span class="mi">20</span><span class="p">,</span>  <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">mine1_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    <span class="n">mine2_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span>  <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span>  <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span>  <span class="mi">14</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span>  <span class="mi">17</span><span class="p">,</span>  <span class="mi">18</span><span class="p">,</span>  <span class="mi">19</span><span class="p">,</span>  <span class="mi">20</span><span class="p">,</span>  <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">mine2_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span>  <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    <span class="n">mine3_X</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">11</span><span class="p">,</span>  <span class="mi">12</span><span class="p">,</span>  <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span>  <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span>  <span class="mi">15</span><span class="p">,</span>  <span class="mi">16</span><span class="p">,</span>  <span class="mi">17</span><span class="p">,</span>  <span class="mi">18</span><span class="p">,</span>  <span class="mi">19</span><span class="p">,</span>  <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span>  <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    <span class="n">mine3_Y</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span> <span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span> <span class="s1">&#39;Lecture data : &#39;</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">Calculate</span><span class="p">(</span> <span class="n">test1_X</span><span class="p">,</span> <span class="n">test1_Y</span><span class="p">,</span> <span class="n">test2_X</span><span class="p">,</span> <span class="n">test2_Y</span><span class="p">,</span> <span class="n">test3_X</span><span class="p">,</span> <span class="n">test3_Y</span> <span class="p">)</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="s1">&#39;Mine    data : &#39;</span> <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span> <span class="n">Calculate</span><span class="p">(</span> <span class="n">mine1_X</span><span class="p">,</span> <span class="n">mine1_Y</span><span class="p">,</span> <span class="n">mine2_X</span><span class="p">,</span> <span class="n">mine2_Y</span><span class="p">,</span> <span class="n">mine3_X</span><span class="p">,</span> <span class="n">mine3_Y</span> <span class="p">)</span> <span class="p">)</span>
+    
 </pre></div>
 
     </div>
@@ -13167,19 +13233,28 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>dat_1:           [0.5 1.  1.5 2.  2.5 3.  3.5 4.  4.5]
-discrete_dat:    [0 0 0 1 1 2 2 3 3]
-cutoff:          [1.5, 2.5, 3.5]
+<pre>Lecture data : 
+The second data is better. Entropy is 2.7548875021634682 :
 
- 
-
-dat_2:           [5.   5.25 5.5  5.75 6.   6.25 6.5  6.75 7.   7.25]
-discrete_dat:    [0 0 0 1 1 1 2 2 3 3]
-cutoff:          [5.5, 6.25, 6.75]
+Mine    data : 
+The first data is better. Entropy is 2.7295739585136225 :
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
 </div>
 </div>
 
