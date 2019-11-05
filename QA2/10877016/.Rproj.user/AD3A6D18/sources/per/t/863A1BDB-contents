@@ -1,0 +1,196 @@
+
+
+##########packages
+if (!require(readxl)) {
+  install.packages("readxl")
+  library(readxl)
+}
+if (!require(XLConnect)) {
+  install.packages("XLConnect")
+  library(XLConnect)
+} 
+if (!require(dplyr)) {
+  install.packages("dplyr")
+  library(dplyr)
+} 
+if (!require(plyr)) {
+  install.packages("plyr")
+  library(plyr)
+} 
+if (!require(arules)) {
+  install.packages("arules")
+  library(arules)
+} 
+if (!require(arulesViz)) {
+  install.packages("arulesViz")
+  library(arulesViz)
+} 
+if (!require(rpart)) {
+  install.packages("rpart")
+  library(rpart)
+}
+if (!require(rpart.plot))  {
+  install.packages("rpart.plot")
+  library(rpart.plot)
+}
+if (!require(randomForest))  {
+  install.packages("randomForest")
+  library(randomForest)
+}
+
+if (!require(party))  {
+  install.packages("party")
+  library(party)
+}
+require(ISLR)
+require(tree)
+###########------file address
+setwd("E:/Rdata/比賽/關聯模型")
+###########function
+##########-----------read data function(year=讀取xlsx的檔名,range1=起始年份,range2=結束年分)
+read.data <- function(year = 101,range1=101,range2=103){
+  
+  fname <-paste("St&Tech_merge_",year,".xlsx",sep = "")
+  if (!file.exists(fname)){
+    return(NULL)
+  } else {
+    wb <- loadWorkbook(fname)
+    df = readWorksheet(wb, sheet = getSheets(wb))
+    
+  }
+  names(df) <- getSheets(wb)
+  range = as.character(range1:range2)
+  k <- sapply(range, function(x){
+    m <- which(grepl(x, names(df)))
+    return(m)
+  })
+  k <- unlist(k)
+  
+  return(df[k])
+}
+require(ISLR)
+require(tree)
+###########-------readdata
+studentDataList<-read.data(102,102,105)
+studentDataDF   <- ldply (studentDataList, data.frame)
+k<-strsplit(studentDataDF$.id,"(",fixed = TRUE)
+l <- sapply(k, function(x){return(x[1])})
+l<-gsub("Year","",l)
+l <- gsub(" ", "", l, fixed = TRUE)
+studentDataDF$.id <- l
+colnames(studentDataDF)[which(names(studentDataDF) == ".id")] <- "年度"
+studentDataDF$Col1 <- NULL
+
+############---------第一年關聯----------
+studentFirstYear <-studentDataDF
+studentFirstYear<-subset(studentFirstYear,studentFirstYear$年度==1)
+Firstyear<-studentFirstYear[,c(-1,-3,-6,-7,-9,-10,-11:-17,-18,-19,-20,-21,-22,-23,-24,-25,-26,-27,-28,-29)]
+for(i in 1:ncol(Firstyear)) Firstyear[,i] <- as.factor(Firstyear[,i])
+rule <- apriori(Firstyear, 
+                parameter=list(minlen=3, supp=0.001, conf=0.5),  
+                appearance = list(default="lhs",
+                                  rhs=c("學籍狀態=退學","學籍狀態=休學")
+                )
+)  
+inspect(rule)
+sort.rule <- sort(rule, by="conf")
+inspect(sort.rule[1:10])
+plot(sort.rule[1:6], method="grouped",by="conf")
+plot(sort.rule[1:10], method="graph")
+
+############---------第二年關聯----------
+studentSecondYear <-studentDataDF
+studentSecondYear<-subset(studentSecondYear,studentSecondYear$年度==2)
+SecondYear<-studentSecondYear[,c(-1,-6,-7,-8,-10,-18,-19,-21,-22,-23,-24,-25,-26,-27,-28,-29)]
+for(i in 1:ncol(SecondYear)) SecondYear[,i] <- as.factor(SecondYear[,i])
+rule <- apriori(SecondYear, 
+                parameter=list(minlen=2, supp=0.001, conf=0.2),  
+                appearance = list(default="lhs",
+                                  rhs=c("X2學籍狀態=退學","X2學籍狀態=休學")
+
+                )
+)  
+inspect(rule[1:50])
+sort.rule <- sort(rule, by="conf")
+inspect(sort.rule[1:20])
+plot(sort.rule[1:100], method="grouped")
+############---------第三年關聯----------
+studentThirdYear <-studentDataDF
+studentThirdYear<-subset(studentThirdYear,studentThirdYear$年度==3)
+ThirdYear<-studentThirdYear[,-c(1,6,7,8,9,10,11:22,24:29)]
+for(i in 1:ncol(ThirdYear)) ThirdYear[,i] <- as.factor(ThirdYear[,i])
+####ThirdYear<- apply(ThirdYear,2,function(i)as.factor(i))
+rule <- apriori(ThirdYear, 
+                parameter=list(minlen=2, supp=0.010, conf=0.2),  
+                appearance = list(default="lhs",
+                                  rhs=c("X3學籍狀態=退學","X3學籍狀態=休學")
+
+                )
+)  
+inspect(rule)
+sort.rule <- sort(rule, by="conf")
+inspect(sort.rule)
+plot(sort.rule, method="grouped")
+plot(sort.rule, method="graph")
+############---------第四年關聯----------
+studentFourthYear <-studentDataDF
+studentFourthYear<-subset(studentFourthYear,studentFourthYear$年度==4)
+FourthYear<-studentFourthYear[,c(-1,-6,-7,-8,-10,-18,-19,-20,-21,-22,-23,-24,-25,-27,-28,-29)]
+for(i in 1:ncol(FourthYear)) FourthYear[,i] <- as.factor(FourthYear[,i])
+rule <- apriori(FourthYear, 
+                parameter=list(minlen=2, supp=0.000095, conf=0.2),  
+                appearance = list(default="lhs",
+                                  rhs=c("X4學籍狀態=退學","X4學籍狀態=休學")
+                )
+)  
+inspect(rule[1:100])
+sort.rule <- sort(rule, by="conf")
+inspect(sort.rule[1:20])
+plot(sort.rule[1:100], method="grouped")
+############---------第五年關聯----------
+studentfifthYear <-studentDataDF
+studentfifthYear<-subset(studentfifthYear,studentfifthYear$年度==5)
+FifthYear<-studentfifthYear[,c(-1,-6,-7,-8,-10,-18,-19,-20,-21,-22,-23,-24,-25,-26,-27,-28)]
+for(i in 1:ncol(FifthYear)) FifthYear[,i] <- as.factor(FifthYear[,i])
+rule <- apriori(FifthYear, 
+                parameter=list(minlen=2, supp=0.04, conf=0.2),  
+                appearance = list(default="lhs",
+                                  rhs="X5學籍狀態=在學"
+                )
+)  
+inspect(rule[1:100])
+sort.rule <- sort(rule, by="conf")
+##inspect(sort.rule)
+plot(sort.rule[1:100], method="grouped")
+############---------決策樹----------
+set.seed(22)
+train.index <- sample(x=1:nrow(FourthYear), size=ceiling(0.8*nrow(FourthYear) ))
+train <- FourthYear[train.index, ]
+test  <- FourthYear[-train.index, ]
+for(i in 1:ncol(train)) train[,i] <- as.factor(train[,i])
+
+cart.model<- rpart(X4學籍狀態 ~性別+入學身份 , 
+                   data=train)
+cart.model
+
+library(randomForest)
+train$X4學籍狀態 <- as.factor(train$X4學籍狀態)
+train$原畢業學校<-NULL
+iris.rf <- randomForest(X4學籍狀態 ~ ., data=train)
+
+g <- predict(iris.rf,test[,c(-3,-13)])
+length(which(g==test$X4學籍狀態))/nrow(test)
+
+
+colnamechange<-function(studentdata,inputgrade){
+  if(inputgrade==4){
+    names(studentdata)[which(names(studentdata)=="X4學籍狀態")]<-"學籍狀態"
+      studentdata<-studentdata[,c(-1,-6,-7,-8,-10,-18,-19,-20,-21,-22,-23,-24,-25,-27,-28,-29)]
+  }
+  
+      return(studentdata)
+}
+
+
+a<-colnamechange(studentFourthYear,4)
+

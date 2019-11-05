@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572841160878.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3158199241",
+    "id" : "863A1BDB",
+    "lastKnownWriteTime" : 1566704100,
+    "last_content_update" : 1566704100,
+    "path" : "E:/Rdata/比賽/關聯模型/關聯模型V2.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "146,13",
+        "scrollLine" : "145"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

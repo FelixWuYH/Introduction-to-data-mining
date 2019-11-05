@@ -1,0 +1,26 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1572841117380.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "62A905D3",
+    "lastKnownWriteTime" : 2964058422915986531,
+    "last_content_update" : 1572841117380,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "id" : "268e460f6e254f65b560f456531a6d83",
+        "name" : "trans",
+        "title" : "trans"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "object_explorer"
+}
